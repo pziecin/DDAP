@@ -1,4 +1,4 @@
-package com.company;
+package com.company.graph;
 
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public class Edge {
         this.endNode = ed.endNode;
     }
 
-    public Edge(int fibrePairs, float fibreCost, int numberOfLambdas, int startNode, int endNode) {
+    public Edge(int startNode, int endNode, int fibrePairs, float fibreCost, int numberOfLambdas) {
         this.numberOfFibrePairs = fibrePairs;
         this.fibrePairCost = fibreCost;
         this.numberOfLambdas = numberOfLambdas;

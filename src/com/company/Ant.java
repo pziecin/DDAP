@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.graph.Edge;
+
 import java.util.ArrayList;
 import java.util.List;
 

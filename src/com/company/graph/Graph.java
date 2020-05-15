@@ -1,10 +1,11 @@
-package com.company;
+package com.company.graph;
 
 import java.util.*;
 
 public class Graph {
 
     private  Edge[][] graf;
+    private List<Demand> demandList;
 
     public Edge[][] getGraf() {
         return graf;
