@@ -35,10 +35,10 @@ public class OFMGraph {
             loadedEdgeList = new ArrayList<>();
             demandList = new ArrayList<>();
             line = br.readLine();
-            while(!line.equals("-1")){
+            while (!line.equals("-1")) {
                 String[] array = line.split("\\s+");
                 List<Integer> link = Arrays.stream(array).map(s -> Integer.parseInt(s)).collect(Collectors.toList());
-                loadedEdgeList.add(new Edge(link.get(0),link.get(1),link.get(2),link.get(3),link.get(4)));
+                loadedEdgeList.add(new Edge(link.get(0), link.get(1), link.get(2), link.get(3), link.get(4)));
                 sb.append(line);                //Mozna usunac
                 sb.append(System.lineSeparator()); //Mozna usunac
                 line = br.readLine();
@@ -48,10 +48,10 @@ public class OFMGraph {
             br.readLine();                                                                                                      //NR OF DEMANDS
             line = br.readLine();                                                                                               //SPACE
 //            loadedEdgeList.forEach(s->System.out.println(s.toString()));
-            while(line!=null) {
+            while (line != null) {
                 if (line.isEmpty()) {
                     line = br.readLine();                                                                                       //example: 1 2 3
-                    if(line==null){                                                                                             //at the end if there is null line
+                    if (line == null) {                                                                                             //at the end if there is null line
                         break;
                     }
                     String[] array = line.split("\\s+");
@@ -63,7 +63,7 @@ public class OFMGraph {
                     List<List<Integer>> edgeIdReference = new ArrayList<>();
                     List<Integer> oneEdgeItDemand;
 
-                    for(int i=0; i < pathsNumber; i++) {
+                    for (int i = 0; i < pathsNumber; i++) {
                         line = br.readLine();                                                                                  //example: 1 1
                         array = line.split("\\s+");
                         link = Arrays.stream(array).map(s -> Integer.parseInt(s)).collect(Collectors.toList());
@@ -72,23 +72,25 @@ public class OFMGraph {
 //                        link.forEach(s->System.out.print(s));
 //                        System.out.println();
                     }
-                    demandList.add(new Demand(edgeIdReference,startNode,endNode,volume,pathsNumber));
+                    demandList.add(new Demand(edgeIdReference, startNode, endNode, volume, pathsNumber));
                 }
                 line = br.readLine();
             }
-            return createGraph();
         }catch (FileNotFoundException fnfe){
             fnfe.printStackTrace();
         }catch (IOException ioe){
             ioe.printStackTrace();
+        }finally {
+            return createGraph();
         }
     }
 
     private Graph createGraph(){
         Graph graph;
-
-
-        return new Graph();
+        int graphSize = loadedEdgeList.size()-1;
+        graph = new Graph(new Edge[graphSize][graphSize]);
+        graph.createGraph(loadedEdgeList, demandList);
+        return graph;
     }
 
     public void divideFile(){

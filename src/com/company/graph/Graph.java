@@ -15,26 +15,40 @@ public class Graph {
         this.graf = graf;
     }
 
-
-    public Edge[][] createRandomGraph(int maxWeight){  //p
-            Random rand = new Random();
-            double pheromone = 0.001;// rand.nextDouble();
-            for (int i = 0; i < graf[0].length; i++) {
-                for (int j = i; j < graf[1].length; j++) {
-                    if (i == j) {
-//                        graf[i][j] = new Edge(0,i,j);
-                        continue;
-                    }
-////                #Wpisywanie reczne wag wezla
-                    Scanner sc = new Scanner(System.in);
-	                System.out.println("Podaj wage pomiedzy węzłem " + i + " , a " + j);
-//	                graf[i][j] = new Edge(sc.nextInt());
-                    graf[j][i] = new Edge(graf[i][j]);            //same references on Edge (undirected graph 1->2 and 2->1 are equals)
-                }
-            }
-            return graf;
+    @Override
+    public String toString() {
+        return Arrays.deepToString(graf) + demandList.toString();
     }
 
+    public void createGraph(List<Edge> edges, List<Demand> demandList){
+        edges.forEach(edge -> {
+            int startNode = edge.getStartNode()-1;
+            int endNode = edge.getEndNode()-1;
+            graf[startNode][endNode] = edge;
+            graf[endNode][startNode] = new Edge(graf[startNode][endNode]);
+        });
+        createDemand(demandList);
+    }
+
+    private void createDemand(List<Demand> demandList){
+        this.demandList = demandList;
+    }
+
+    public List<Demand> getDemandList() {
+        return demandList;
+    }
+
+    public int getDemandSize() {
+        return demandList.size();
+    }
+
+    public int getDemandMaxPathSize(){
+        return demandList.stream().max(Comparator.comparingInt(Demand::getPathsNumber)).get().getPathsNumber();
+    }
+
+    public void setDemandList(List<Demand> demandList) {
+        this.demandList = demandList;
+    }
 
     //Reading Edge references in array
     public void printEdgeReferences() {

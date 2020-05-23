@@ -34,8 +34,8 @@ public class Edge {
         this.numberOfFibrePairs = ed.numberOfFibrePairs;
         this.fibrePairCost = ed.fibrePairCost;
         this.numberOfLambdas = ed.numberOfLambdas;
-        this.startNode = ed.startNode;
-        this.endNode = ed.endNode;
+        this.startNode = ed.endNode;
+        this.endNode = ed.startNode;
     }
 
     public Edge(int startNode, int endNode, int fibrePairs, float fibreCost, int numberOfLambdas) {
