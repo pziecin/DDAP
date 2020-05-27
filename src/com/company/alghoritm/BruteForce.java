@@ -3,6 +3,8 @@ package com.company.alghoritm;
 import com.company.graph.Demand;
 import com.company.graph.Graph;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,15 +22,34 @@ public class BruteForce {
     }
 
     public void generateRoutingTable(){
-        System.out.println(Arrays.toString(generateTable(5)));
-        System.out.println(countBits(63));
+//        System.out.println(Arrays.toString(generateTable(5)));
+//        System.out.println(countBits(63));
         for (Demand demand : graph.getDemandList()) {
-            generateNVariationsOnKPoints(demand.getVolume(), demand.getPathsNumber());
+            int[][] variationsInDecimal = generateNVariationsOnKPoints(demand.getVolume(), demand.getPathsNumber());
+            List<int[]> variationsForVolumeDemand = filtrWrongVariationsInGraph(variationsInDecimal, demand.getVolume());
         }
     }
 
+    private List<int[]> filtrWrongVariationsInGraph(int[][] variationsDecimal, int volume) {
+        List<int[]> variationsForVolumeDemand = new ArrayList<>();
+        for(int i=0; i< variationsDecimal.length; i++){
+            int tmp = 0;
+            int[] tmpArray = new int[variationsDecimal[i].length];
+            for(int j=0; j < variationsDecimal[i].length; j++){
+                tmp = tmp + variationsDecimal[i][j];
+                tmpArray[j] = variationsDecimal[i][j];
+            }
+            if(tmp <= volume){
+                variationsForVolumeDemand.add(tmpArray);
+            }
+        }
+        variationsForVolumeDemand.forEach(s -> System.out.println(Arrays.toString(s)));
+        System.out.println(variationsForVolumeDemand.size());
+        return variationsForVolumeDemand;
+    }
 
-    private void generateNVariationsOnKPoints(int n, int k){
+
+    private int[][] generateNVariationsOnKPoints(int n, int k){
         System.out.println(n + " " + k);
         int nBits = countBits(n);
         System.out.println(nBits);
@@ -36,15 +57,36 @@ public class BruteForce {
         String[] variationsInBytesSeriesBeforeSplit = convertToBinary(variationsBeforeConversionToBinary, nBits, k);
         System.out.println(Arrays.toString(variationsBeforeConversionToBinary));
         System.out.println(Arrays.toString(variationsInBytesSeriesBeforeSplit));
-       splitBytesSeries(variationsInBytesSeriesBeforeSplit,nBits);
-
-
+        String[][] variationsInBytesSeriesAfterSplit = splitBytesSeries(variationsInBytesSeriesBeforeSplit, nBits);
+        int[][] variationsInDecimal = convertToDecimal(variationsInBytesSeriesAfterSplit);
+        return variationsInDecimal;
     }
 
-    private void splitBytesSeries(String[] bytesSeriesArray, int bits){
+    private String[][] splitBytesSeries(String[] bytesSeriesArray, int bits){
+        String[][] bytesSeriesAfterSplit = new String[bytesSeriesArray.length][bytesSeriesArray[0].length()/bits];
+        System.out.println(bytesSeriesArray.length+ " SPACE " + bytesSeriesArray[0].length()/bits);
+        int row = 0;
         for(String bytesSeries : bytesSeriesArray) {
-            System.out.println(Arrays.toString(bytesSeries.split("(?<=\\G..)")));
+            bytesSeriesAfterSplit[row] = bytesSeries.split("(?<=\\G.{"+bits+"})");
+//            System.out.println(Arrays.toString(bytesSeries.split("(?<=\\G.{"+bits+"})")));
+//            System.out.println(Arrays.toString(bytesSeriesAfterSplit[row]));
+            row++;
         }
+        return bytesSeriesAfterSplit;
+    }
+
+    private int[][] convertToDecimal(String[][] table){
+        int[][] tableWithVariations = new int[table.length][table[0].length];
+        int rowIndex = 0, colIndex = 0;
+        for(String[] row : table){
+            for(String col: row){
+                tableWithVariations[rowIndex][colIndex] = Integer.parseInt(col,2);
+                colIndex++;
+            }
+            rowIndex++;
+            colIndex=0;
+        }
+        return tableWithVariations;
     }
 
     private String[] convertToBinary(int[] table, int bits, int kPoints){
