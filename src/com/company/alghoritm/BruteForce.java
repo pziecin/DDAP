@@ -3,11 +3,9 @@ package com.company.alghoritm;
 import com.company.graph.Demand;
 import com.company.graph.Graph;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 
@@ -17,17 +15,53 @@ public class BruteForce {
 
     public BruteForce(Graph graph) {
         this.graph = graph;
-//        columns =
         routingSolution = new Integer[graph.getDemandSize()][graph.getDemandMaxPathSize()];
     }
 
-    public void generateRoutingTable(){
-//        System.out.println(Arrays.toString(generateTable(5)));
-//        System.out.println(countBits(63));
+    public void generateRoutingTable() {
+        List<List<int[]>> demandList = new ArrayList<>();
         for (Demand demand : graph.getDemandList()) {
             int[][] variationsInDecimal = generateNVariationsOnKPoints(demand.getVolume(), demand.getPathsNumber());
             List<int[]> variationsForVolumeDemand = filtrWrongVariationsInGraph(variationsInDecimal, demand.getVolume());
+            demandList.add(variationsForVolumeDemand);
         }
+        List<String> aa = new ArrayList<>();
+        generatePermutations(demandList, aa, 0, "");
+//        aa.forEach(s -> System.out.println(s));
+//        System.out.println(aa.size());
+        linkLoads();
+    }
+
+    public void linkLoads(){
+        int test =0;
+        int[] link = new int[graph.getNumberOfLinks()];
+        for (int e=0; e< graph.getNumberOfLinks(); e++){
+            link[e] = 0;
+        }
+        for(int d=0; d<graph.getDemandSize(); d++){
+            System.out.println("DEMAND" + d);
+            for(int p=0;p< graph.getDemandList().get(d).getDemandPathsListSize();p++){
+                System.out.println("PATH" + p);
+                for (int e=0; e< graph.getNumberOfLinks();e++){
+                    System.out.println("LINK" + e);
+                    if(isLinkInDemandPath(e,d,p)){
+                        test++;
+                        System.out.println(test);
+//                    if(isLinkInDemandPath(e,d,p)){
+//                        link[e] = link[e] +
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isLinkInDemandPath(int link, int demand, int path) {
+        for(Integer link_id : graph.getDemandList().get(demand).getDemandPaths().get(path)){
+            if(link_id.intValue() == link){
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<int[]> filtrWrongVariationsInGraph(int[][] variationsDecimal, int volume) {
@@ -39,24 +73,28 @@ public class BruteForce {
                 tmp = tmp + variationsDecimal[i][j];
                 tmpArray[j] = variationsDecimal[i][j];
             }
-            if(tmp <= volume){
+            if(tmp == volume){
                 variationsForVolumeDemand.add(tmpArray);
             }
         }
-        variationsForVolumeDemand.forEach(s -> System.out.println(Arrays.toString(s)));
-        System.out.println(variationsForVolumeDemand.size());
         return variationsForVolumeDemand;
     }
 
+    private void generatePermutations(List<List<int[]>> lists, List<String> result, int depth, String current) {
+        if (depth == lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < lists.get(depth).size(); i++) {
+            generatePermutations(lists, result, depth + 1, current + Arrays.toString(lists.get(depth).get(i)));
+        }
+    }
 
     private int[][] generateNVariationsOnKPoints(int n, int k){
-        System.out.println(n + " " + k);
         int nBits = countBits(n);
-        System.out.println(nBits);
         int[] variationsBeforeConversionToBinary = generateTable((int) Math.pow(2,nBits*k));   // n+1 beacuse of 0
         String[] variationsInBytesSeriesBeforeSplit = convertToBinary(variationsBeforeConversionToBinary, nBits, k);
-        System.out.println(Arrays.toString(variationsBeforeConversionToBinary));
-        System.out.println(Arrays.toString(variationsInBytesSeriesBeforeSplit));
         String[][] variationsInBytesSeriesAfterSplit = splitBytesSeries(variationsInBytesSeriesBeforeSplit, nBits);
         int[][] variationsInDecimal = convertToDecimal(variationsInBytesSeriesAfterSplit);
         return variationsInDecimal;
@@ -64,12 +102,9 @@ public class BruteForce {
 
     private String[][] splitBytesSeries(String[] bytesSeriesArray, int bits){
         String[][] bytesSeriesAfterSplit = new String[bytesSeriesArray.length][bytesSeriesArray[0].length()/bits];
-        System.out.println(bytesSeriesArray.length+ " SPACE " + bytesSeriesArray[0].length()/bits);
         int row = 0;
         for(String bytesSeries : bytesSeriesArray) {
             bytesSeriesAfterSplit[row] = bytesSeries.split("(?<=\\G.{"+bits+"})");
-//            System.out.println(Arrays.toString(bytesSeries.split("(?<=\\G.{"+bits+"})")));
-//            System.out.println(Arrays.toString(bytesSeriesAfterSplit[row]));
             row++;
         }
         return bytesSeriesAfterSplit;

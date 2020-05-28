@@ -6,6 +6,7 @@ public class Graph {
 
     private  Edge[][] graf;
     private List<Demand> demandList;
+    private int numberOfLinks;
 
     public Edge[][] getGraf() {
         return graf;
@@ -21,6 +22,7 @@ public class Graph {
     }
 
     public void createGraph(List<Edge> edges, List<Demand> demandList){
+        numberOfLinks = edges.size();
         edges.forEach(edge -> {
             int startNode = edge.getStartNode()-1;
             int endNode = edge.getEndNode()-1;
@@ -28,6 +30,10 @@ public class Graph {
             graf[endNode][startNode] = new Edge(graf[startNode][endNode]);
         });
         createDemand(demandList);
+    }
+
+    public int getNumberOfLinks(){
+        return numberOfLinks;
     }
 
     private void createDemand(List<Demand> demandList){

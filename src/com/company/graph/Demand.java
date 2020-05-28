@@ -21,6 +21,14 @@ public class Demand {
         this.pathsNumber = pathsNumber;
     }
 
+    public int getDemandPathsListSize(){
+        return demandPaths.size();
+    }
+
+    public List<List<Integer>> getDemandPaths() {
+        return demandPaths;
+    }
+
     public int getStartNode() {
         return startNode;
     }
