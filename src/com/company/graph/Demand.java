@@ -29,6 +29,16 @@ public class Demand {
         return demandPaths;
     }
 
+    public void printDemandPath(){
+        System.out.println("DEMAND PATHS");
+        for (int i = 0; i < demandPaths.size() ; i++) {
+            for (int j = 0; j < demandPaths.get(i).size() ; j++) {
+                System.out.print(demandPaths.get(i).get(j));
+            }
+            System.out.println();
+        }
+    }
+
     public int getStartNode() {
         return startNode;
     }
