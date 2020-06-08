@@ -9,15 +9,20 @@ import java.util.stream.IntStream;
 
 public class BruteForce {
     private Graph graph;
-    private Integer[][] routingSolution;
-    private Map<List<int[]>,int[]> linkLoadsList;
+    private Map<List<int[]>, int[]> linkLoadsList;
 
     public BruteForce(Graph graph) {
         this.graph = graph;
-        routingSolution = new Integer[graph.getDemandSize()][graph.getDemandMaxPathSize()];
     }
 
-    public Map<List<int[]>, int[]> generateRoutingTable() {
+    public void printSolutions() {
+        linkLoadsList.forEach((key, value) -> {
+            key.forEach(t -> System.out.println(Arrays.toString(t)));
+            System.out.println("  " + Arrays.toString(value));
+        });
+    }
+
+    public void generateRoutingTable() {
         List<List<int[]>> demandList = new ArrayList<>();
         for (Demand demand : graph.getDemandList()) {
             int[][] variationsInDecimal = generateNVariationsOnKPoints(demand.getVolume(), demand.getPathsNumber());
@@ -29,10 +34,36 @@ public class BruteForce {
 
         linkLoadsList = new HashMap<>();
         for (int i = 0; i < combinationsOfDemand.size(); i++) {
-            linkLoadsList.put(combinationsOfDemand.get(i),linkLoads(combinationsOfDemand.get(i)));
+            linkLoadsList.put(combinationsOfDemand.get(i), linkLoads(combinationsOfDemand.get(i)));
         }
-        return linkLoadsList;
     }
+
+
+    public Map<List<int[]>, Integer> solveDAP() {
+        Map<List<int[]>, Integer> linkLoadForDap = new HashMap<>();
+        for (Map.Entry<List<int[]>, int[]> entry : linkLoadsList.entrySet()) {
+            List linkLoads = new ArrayList();
+            for (int i = 0; i < entry.getValue().length; i++) {
+                linkLoads.add(entry.getValue()[i] - graph.getCapacityOnLink().get(i));
+            }
+            linkLoadForDap.put(entry.getKey(), (int) Collections.min(linkLoads));
+        }
+        return linkLoadForDap;
+    }
+
+    public Map<List<int[]>, Float> solveDDAP() {
+        Map<List<int[]>, Float> linkLoadForDDAP = new HashMap<>();
+        for (Map.Entry<List<int[]>, int[]> entry : linkLoadsList.entrySet()) {
+            float cost =0;
+            for (int i = 0; i < entry.getValue().length; i++) {
+                cost = cost + entry.getValue()[i]/graph.getModularity().get(i)*graph.getFibrePairCost().get(i);
+            }
+            System.out.print(cost + " ");
+            linkLoadForDDAP.put(entry.getKey(), cost);
+        }
+        return linkLoadForDDAP;
+    }
+
 
     private static void generatePermutations(List<List<int[]>> ori, List<List<int[]>> res, int d, List<int[]> current) {
         if (d == ori.size()) {
@@ -180,13 +211,5 @@ public class BruteForce {
 
     public void setGraph(Graph graph) {
         this.graph = graph;
-    }
-
-    public Integer[][] getRoutingSolution() {
-        return routingSolution;
-    }
-
-    public void setRoutingSolution(Integer[][] routingSolution) {
-        this.routingSolution = routingSolution;
     }
 }

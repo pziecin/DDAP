@@ -30,6 +30,31 @@ public class Edge {
         this.endNode = endNode;
     }
 
+
+    public int getNumberOfFibrePairs() {
+        return numberOfFibrePairs;
+    }
+
+    public void setNumberOfFibrePairs(int numberOfFibrePairs) {
+        this.numberOfFibrePairs = numberOfFibrePairs;
+    }
+
+    public float getFibrePairCost() {
+        return fibrePairCost;
+    }
+
+    public void setFibrePairCost(float fibrePairCost) {
+        this.fibrePairCost = fibrePairCost;
+    }
+
+    public int getNumberOfLambdas() {
+        return numberOfLambdas;
+    }
+
+    public void setNumberOfLambdas(int numberOfLambdas) {
+        this.numberOfLambdas = numberOfLambdas;
+    }
+
     public Edge(Edge ed) {
         this.numberOfFibrePairs = ed.numberOfFibrePairs;
         this.fibrePairCost = ed.fibrePairCost;
@@ -45,18 +70,6 @@ public class Edge {
         this.startNode = startNode;
         this.endNode = endNode;
     }
-    //    public double getPheromone() {
-//        return pheromone;
-//    }
-
-//    public void setPheromone(double pheromone) {
-//        this.pheromone = pheromone;
-//    }
-//
-//    public void updatePheromone(double pheromone){
-//        this.pheromone = this.pheromone + pheromone;
-//    }
-
 
     @Override
     public String toString() {
@@ -86,12 +99,3 @@ public class Edge {
         return Objects.hash(numberOfFibrePairs, fibrePairCost, numberOfLambdas, startNode, endNode);
     }
 }
-
-
-
-//1 2 3 4 5
-//2 3 4 5 - > idziemy np do 2
-//z 2 wybieramy sposrod 3 4 5 ? -> idziemy do np 4
-//z 4 wybieramy sposrod 3 5 ? -> idziemy do np. 3
-//z 3 wybieramy 5 ? -> idziemy do 5
-//z 5 idziemy do startu 1

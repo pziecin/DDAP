@@ -15,13 +15,19 @@ public class Main {
         OFMGraph rf = new OFMGraph();
         Graph graph;
         graph = rf.mapFileToGraph(PATH);
-//        System.out.println(graph.toString());
+        graph.getCapacityOnLink().forEach(s-> System.out.println(s));
 
         BruteForce bruteForce = new BruteForce(graph);
-        Map<List<int[]>, int[]> linkLoads = bruteForce.generateRoutingTable();
-        linkLoads.forEach((key, value) -> {
+        bruteForce.generateRoutingTable();
+        bruteForce.printSolutions();
+        bruteForce.solveDAP().forEach((key, value) -> {
             key.forEach(t -> System.out.println(Arrays.toString(t)));
-            System.out.println("  " + Arrays.toString(value));
+            System.out.println("  " + value);
         });
+
+        bruteForce.solveDDAP();
+
+
+
     }
 }
