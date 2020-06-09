@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.alghoritm.BruteForce;
+import com.company.alghoritm.Evolutionary;
 import com.company.filereader.OFMGraph;
 import com.company.graph.Graph;
 
@@ -17,6 +18,12 @@ public class Main {
         graph = rf.mapFileToGraph(PATH);
         graph.getCapacityOnLink().forEach(s-> System.out.println(s));
 
+//        bruteForce(graph);
+        evolutionary(graph);
+
+    }
+
+    private static void bruteForce(Graph graph) {
         BruteForce bruteForce = new BruteForce(graph);
         bruteForce.generateRoutingTable();
         bruteForce.printSolutions();
@@ -24,10 +31,14 @@ public class Main {
             key.forEach(t -> System.out.println(Arrays.toString(t)));
             System.out.println("  " + value);
         });
-
         bruteForce.solveDDAP();
+    }
 
-
-
+    private static void evolutionary(Graph graph){
+        Evolutionary evolutionary = new Evolutionary(graph);
+        evolutionary.generatePopulation(10);
+        evolutionary.getPopulation().forEach(chromosome -> {chromosome.getChromosome().forEach(gene -> System.out.println(Arrays.toString(gene.getAllocationPaterForDemand())));
+            System.out.println();
+        });
     }
 }
