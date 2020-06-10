@@ -28,7 +28,7 @@ public class Evolutionary extends LinkLoads {
         int i =0;
         while(i != 100){
             List<Chromosome> offspring = crossover();
-//          offspring = mutation(offspring);
+            offspring = mutation(offspring);
             population.addAll(offspring);
             i++;
         }
@@ -61,20 +61,20 @@ public class Evolutionary extends LinkLoads {
         int probability = 99;
         int probabilityNominatior = 1;
         for(int i=0; i<offspring.size();i++){
-            if(probabilityNominatior < rand(probability)){
+            if(probabilityNominatior > rand(probability)){
                 int geneNumberToMutate = rand(offspring.get(i).genesList.size());
                 Gene gene = offspring.get(i).getGenesList().get(geneNumberToMutate);
                 int volume = IntStream.of(gene.getAllocationPaterForDemand()).sum();
                 for(int j = 0; j< gene.getGeneLenght(); j++){
                     if(j == gene.getGeneLenght()-1){
-                        gene.setValue(i,volume);
+                        gene.setValue(j,volume);
                         continue;
                     }
                     int randomValue = rand(volume);
                     gene.setValue(i,randomValue);
                     volume = volume - randomValue;
                 }
-                offspring.get(i).getGenesList().set(i,gene);
+                offspring.get(i).getGenesList().set(geneNumberToMutate,gene);
             }else
                 continue;
         }
