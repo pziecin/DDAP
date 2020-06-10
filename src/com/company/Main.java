@@ -6,8 +6,6 @@ import com.company.filereader.OFMGraph;
 import com.company.graph.Graph;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class Main {
     private static String PATH = "C:/Users/lykan/Desktop/oast-dap/net4.txt";
@@ -37,8 +35,10 @@ public class Main {
     private static void evolutionary(Graph graph){
         Evolutionary evolutionary = new Evolutionary(graph);
         evolutionary.generatePopulation(10);
-        evolutionary.getPopulation().forEach(chromosome -> {chromosome.getChromosome().forEach(gene -> System.out.println(Arrays.toString(gene.getAllocationPaterForDemand())));
+        evolutionary.startAlghoritm();
+        evolutionary.getPopulation().forEach(chromosome -> {chromosome.getGenesList().forEach(gene -> System.out.println(Arrays.toString(gene.getAllocationPaterForDemand())));
             System.out.println();
         });
+        System.out.println(evolutionary.getPopulation().size());
     }
 }

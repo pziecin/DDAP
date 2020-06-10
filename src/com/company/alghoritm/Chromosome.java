@@ -3,17 +3,17 @@ package com.company.alghoritm;
 import java.util.List;
 
 public class Chromosome {
-    List<Gene> chromosome;
+    List<Gene> genesList;
 
     public Chromosome(List<Gene> chromosome) {
-        this.chromosome = chromosome;
+        this.genesList = chromosome;
     }
 
-    public List<Gene> getChromosome() {
-        return chromosome;
+    public List<Gene> getGenesList() {
+        return genesList;
     }
 
-    public void setChromosome(List<Gene> chromosome) {
-        this.chromosome = chromosome;
+    public void setGenesList(List<Gene> genesList) {
+        this.genesList = genesList;
     }
 }

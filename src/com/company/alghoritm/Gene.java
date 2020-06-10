@@ -7,6 +7,10 @@ public class Gene {
         this.allocationPaterForDemand = allocationPaterForDemand;
     }
 
+    public Gene(Gene gene){
+        this.allocationPaterForDemand = gene.getAllocationPaterForDemand();
+    }
+
     public int[] getAllocationPaterForDemand() {
         return allocationPaterForDemand;
     }

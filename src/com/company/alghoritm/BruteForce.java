@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 
-public class BruteForce {
+public class BruteForce extends LinkLoads{
     private Graph graph;
     private Map<List<int[]>, int[]> linkLoadsList;
 
@@ -34,7 +34,7 @@ public class BruteForce {
 
         linkLoadsList = new HashMap<>();
         for (int i = 0; i < combinationsOfDemand.size(); i++) {
-            linkLoadsList.put(combinationsOfDemand.get(i), linkLoads(combinationsOfDemand.get(i)));
+            linkLoadsList.put(combinationsOfDemand.get(i), linkLoads(graph, combinationsOfDemand.get(i)));
         }
     }
 
@@ -58,7 +58,7 @@ public class BruteForce {
             for (int i = 0; i < entry.getValue().length; i++) {
                 cost = cost + entry.getValue()[i]/graph.getModularity().get(i)*graph.getFibrePairCost().get(i);
             }
-            System.out.print(cost + " ");
+            System.out.println(cost);
             linkLoadForDDAP.put(entry.getKey(), cost);
         }
         return linkLoadForDDAP;
@@ -95,45 +95,45 @@ public class BruteForce {
     }
 
 
-    private void testAfterIteration(int[] link, int iter) {
-        for (int e : link) {
-            System.out.print(e + " ");
-
-        }
-        System.out.println("BREAK");
-
-        if (iter == 17)
-            System.exit(1);
-    }
-
-    public int[] linkLoads(List<int[]> table) {
-//       int iter = test(table);
-        int[] link = new int[graph.getNumberOfLinks()];
-        for (int e = 0; e < graph.getNumberOfLinks(); e++) {
-            link[e] = 0;
-        }
-        for (int d = 0; d < graph.getDemandSize(); d++) {
-            for (int p = 0; p < graph.getDemandList().get(d).getDemandPathsListSize(); p++) {
-                for (int e = 0; e < graph.getNumberOfLinks(); e++) {
-                    if (isLinkInDemandPath(e + 1, d, p)) {    //e+1 Beacuse numeration of Links beginning from 1 (not from 0)
-                        link[e] = link[e] + table.get(d)[p];
-                    }
-                }
-            }
-        }
-
-        return link;
-//        testAfterIteration(link, iter);
-    }
-
-    private boolean isLinkInDemandPath(int link, int demand, int path) {
-        for (Integer link_id : graph.getDemandList().get(demand).getDemandPaths().get(path)) {
-            if (link_id.intValue() == link) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private void testAfterIteration(int[] link, int iter) {
+//        for (int e : link) {
+//            System.out.print(e + " ");
+//
+//        }
+//        System.out.println("BREAK");
+//
+//        if (iter == 17)
+//            System.exit(1);
+//    }
+//
+//    public int[] linkLoads(List<int[]> table) {
+////       int iter = test(table);
+//        int[] link = new int[graph.getNumberOfLinks()];
+//        for (int e = 0; e < graph.getNumberOfLinks(); e++) {
+//            link[e] = 0;
+//        }
+//        for (int d = 0; d < graph.getDemandSize(); d++) {
+//            for (int p = 0; p < graph.getDemandList().get(d).getDemandPathsListSize(); p++) {
+//                for (int e = 0; e < graph.getNumberOfLinks(); e++) {
+//                    if (isLinkInDemandPath(e + 1, d, p)) {    //e+1 Beacuse numeration of Links beginning from 1 (not from 0)
+//                        link[e] = link[e] + table.get(d)[p];
+//                    }
+//                }
+//            }
+//        }
+//
+//        return link;
+////        testAfterIteration(link, iter);
+//    }
+//
+//    private boolean isLinkInDemandPath(int link, int demand, int path) {
+//        for (Integer link_id : graph.getDemandList().get(demand).getDemandPaths().get(path)) {
+//            if (link_id.intValue() == link) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     private List<int[]> filtrWrongVariationsInGraph(int[][] variationsDecimal, int volume) {
         List<int[]> variationsForVolumeDemand = new ArrayList<>();
