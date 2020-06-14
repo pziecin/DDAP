@@ -7,8 +7,15 @@ public class Gene {
         this.allocationPaterForDemand = allocationPaterForDemand;
     }
 
+    public Gene(int a, int b, int c) {
+        this.allocationPaterForDemand = new int[]{a,b,c};
+    }
+
     public Gene(Gene gene){
-        this.allocationPaterForDemand = gene.getAllocationPaterForDemand();
+        this.allocationPaterForDemand = new int[gene.getAllocationPaterForDemand().length];
+        for(int i = 0; i < gene.getAllocationPaterForDemand().length; i++){
+            this.allocationPaterForDemand[i] = gene.getAllocationPaterForDemand()[i];
+        }
     }
 
     public int[] getAllocationPaterForDemand() {

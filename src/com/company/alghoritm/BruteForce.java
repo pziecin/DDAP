@@ -22,6 +22,10 @@ public class BruteForce extends LinkLoads{
         });
     }
 
+    public Map<List<int[]>, int[]> getLinkLoadsList() {
+        return linkLoadsList;
+    }
+
     public void generateRoutingTable() {
         List<List<int[]>> demandList = new ArrayList<>();
         for (Demand demand : graph.getDemandList()) {
@@ -46,7 +50,7 @@ public class BruteForce extends LinkLoads{
             for (int i = 0; i < entry.getValue().length; i++) {
                 linkLoads.add(entry.getValue()[i] - graph.getCapacityOnLink().get(i));
             }
-            linkLoadForDap.put(entry.getKey(), (int) Collections.min(linkLoads));
+            linkLoadForDap.put(entry.getKey(), (int) Collections.max(linkLoads));
         }
         return linkLoadForDap;
     }
@@ -56,7 +60,7 @@ public class BruteForce extends LinkLoads{
         for (Map.Entry<List<int[]>, int[]> entry : linkLoadsList.entrySet()) {
             float cost =0;
             for (int i = 0; i < entry.getValue().length; i++) {
-                cost = cost + entry.getValue()[i]/graph.getModularity().get(i)*graph.getFibrePairCost().get(i);
+                cost = cost + (float) entry.getValue()[i]/graph.getModularity().get(i)*graph.getFibrePairCost().get(i);
             }
             System.out.println(cost);
             linkLoadForDDAP.put(entry.getKey(), cost);
@@ -79,20 +83,7 @@ public class BruteForce extends LinkLoads{
     }
 
 
-    private int test(List<int[]> table) {
-        int[][] TABL = {{0, 3, 0}, {2, 0, 2}, {2, 3}, {1, 0, 1}, {1, 2, 0}, {2, 2, 0}};
-        int iter = 0;
-        for (int i = 0; i < table.size(); i++) {
-            for (int j = 0; j < table.get(i).length; j++) {
-                System.out.print(table.get(i)[j]);
-                if (table.get(i)[j] == TABL[i][j]) {
-                    iter++;
-                }
-            }
-            System.out.println();
-        }
-        return iter;
-    }
+
 
 
 //    private void testAfterIteration(int[] link, int iter) {
