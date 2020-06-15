@@ -17,6 +17,9 @@ public class Evolutionary extends LinkLoads {
     private int mutationIterator;
     private int alghoritmIterator;
     private long startTime;
+    private float fintessTmp;
+    private float fitnessCurrent;
+    private int tmpIterations;
 
     public List<Chromosome> getPopulation() {
         return population;
@@ -32,6 +35,7 @@ public class Evolutionary extends LinkLoads {
         this.seed = seed;
         this.mutationIterator = 0;
         this.alghoritmIterator = 0;
+        this.tmpIterations = 0;
     }
 
 
@@ -44,12 +48,9 @@ public class Evolutionary extends LinkLoads {
             return false;
     }
 
-    public void alghoritmBody(boolean trueForDap){
+    public void alghoritmBody(boolean trueForDap, int probabilityNominator){
         List<Chromosome> offspring = crossover();
-//        offspring.forEach(s->s.getGenesList().forEach(e -> Arrays.toString(e.getAllocationPaterForDemand())));
-        mutation(offspring);
-        System.out.println(mutationIterator);
-//        e(offspring);
+        mutation(offspring, probabilityNominator);
         population.addAll(offspring);
         if(trueForDap == true)
             calculateFitnessForDAP();
@@ -57,19 +58,27 @@ public class Evolutionary extends LinkLoads {
             calculateFitnessForDDAP();
     }
 
-    private void e(List<Chromosome> offspring) {
-        System.out.println(offspring.get(1).getGenesList());
-        offspring.get(1).getGenesList().set(1,new Gene(1,2,3));
-        System.out.println(offspring.get(1).getGenesList());
-        System.out.println(offspring.get(2).getGenesList());
-    }
-
-    public void startAlghoritm(int iterations, int numberOfMutations, long time, boolean trueForDap){
+    public void startAlghoritm(int iterations, int numberOfMutations, long time, boolean trueForDap, int probabilityNominator){
         startTime = System.currentTimeMillis();
-        while(iteratorCondition(iterations) || mutationCondition(numberOfMutations) || timerCondition(time)){
-            alghoritmBody(trueForDap);
+        while(/*ifFItnessDidntChangedSinceNIterations(30) || */iteratorCondition(iterations) || mutationCondition(numberOfMutations) || timerCondition(time) ){
+            alghoritmBody(trueForDap, probabilityNominator);
         }
     }
+
+//    private boolean ifFItnessDidntChangedSinceNIterations (int nIterations){
+//        if(fitnessCurrent == fintessTmp && fitnessCurrent!=0){
+//            tmpIterations++;
+//            System.out.println("TYLE TMP " + tmpIterations);
+//        }else {
+//            fintessTmp = fitnessCurrent;
+//            fitnessCurrent = 0;
+//            tmpIterations=0;
+//        }
+//        if(tmpIterations > nIterations)
+//            return false;
+//        else
+//            return true;
+//    }
 
     private boolean iteratorCondition(int iterations){
         if(alghoritmIterator != iterations && iterations != 0) {
@@ -116,37 +125,19 @@ public class Evolutionary extends LinkLoads {
         return childs;
     }
 
-    public void mutation(List<Chromosome> offspring){
-        int probability = 10;
-        int probabilityNominatior = 1;
-//        System.out.println("OFFSPRING BEFORE");
-//        offspring.forEach(s->s.getGenesList().forEach(e-> System.out.println(Arrays.toString(e.getAllocationPaterForDemand()))));
+    public void mutation(List<Chromosome> offspring, int probabilityNominator){
+        int probability = 99;
         for(int i=0; i<offspring.size();i++){
-            if(probabilityNominatior > rand(probability)){
+            if(probabilityNominator > rand(probability)){
                 int numbersFromWhichToRand = offspring.get(i).genesList.size();
                 int geneNumberToMutate = rand(numbersFromWhichToRand);
-//                Gene gene = new Gene(new int[offspring.get(i).getGenesList().get(geneNumberToMutate).getGeneLenght()]);
                 Gene gene = offspring.get(i).getGenesList().get(geneNumberToMutate);
-//                System.out.println("GENE TO MUTATE + chromosome nr: " + i + " gene to mutate: "+ geneNumberToMutate);
-//                System.out.println(Arrays.toString(gene.getAllocationPaterForDemand()));
                 int volume = IntStream.of(gene.getAllocationPaterForDemand()).sum();
                 generateDemandFlowsForGene(gene, volume);
-//                List<Gene> genesList = new ArrayList<>(offspring.get(i).getGenesList());
-//                System.out.println("BEFORE");
-//                genesList.forEach(s -> System.out.println(Arrays.toString(s.getAllocationPaterForDemand())));
-//                System.out.println("GENE" + Arrays.toString(gene.getAllocationPaterForDemand()));
-//                System.out.println("AFTER");
-//                System.out.println("REF" + genesList);
-//                genesList.forEach(s-> System.out.println(s));
-//                genesList.forEach(s -> System.out.println(Arrays.toString(s.getAllocationPaterForDemand())));
                 mutationIterator++;
             }else
                 continue;
         }
-//        System.out.println("OFFSPRING AFTER");
-//        System.out.println("REF OFF" + offspring);
-//        offspring.forEach(s-> s.getGenesList().forEach(g-> System.out.println(g)));
-//        offspring.forEach(s->s.getGenesList().forEach(e-> System.out.println(Arrays.toString(e.getAllocationPaterForDemand()))));
     }
 
     private void generateDemandFlowsForGene(Gene gene, int volume) {
@@ -200,7 +191,7 @@ public class Evolutionary extends LinkLoads {
         }
 
         while(population.size() != sizeOfPopulation){
-            int tmp = -144;
+            int tmp = -graph.getCapacityOnLink().get(0).intValue();
             int indexToDelte = 0;
             for (int i = 0; i < fitnessList.size(); i++) {
                 if (tmp < fitnessList.get(i).intValue()) {
@@ -212,6 +203,8 @@ public class Evolutionary extends LinkLoads {
             population.remove(indexToDelte);
         }
         fitnessList.forEach(s -> System.out.print(s + " "));
+        fitnessList.forEach(fitness -> fitnessCurrent += fitness);
+        fitnessCurrent = fitnessCurrent/fitnessList.size();
         System.out.println();
     }
 
@@ -233,7 +226,7 @@ public class Evolutionary extends LinkLoads {
         for (int i = 0; i < population.size(); i++) {
             float cost =0;
             for (int j = 0; j < linkLoadsList.get(i).length; j++) {
-                cost = cost + (float) linkLoadsList.get(i)[j]/ graph.getModularity().get(j)*graph.getFibrePairCost().get(j);
+                cost = cost + (float) linkLoadsList.get(i)[j]/ graph.getModularity().get(j).intValue()*graph.getFibrePairCost().get(j).floatValue();
             }
             fitnessList.add(cost);
         }
@@ -251,37 +244,9 @@ public class Evolutionary extends LinkLoads {
             population.remove(indexToDelte);
         }
         fitnessList.forEach(s -> System.out.print(s + " "));
+        fitnessCurrent = 0;
+        fitnessList.forEach(fitness -> fitnessCurrent = fitnessCurrent + fitness.floatValue());
+        fitnessCurrent = fitnessCurrent/fitnessList.size();
         System.out.println();
     }
-
-//
-//    public int[] linkLoads(List<int[]> table) {
-////       int iter = test(table);
-//        int[] link = new int[graph.getNumberOfLinks()];
-//        for (int e = 0; e < graph.getNumberOfLinks(); e++) {
-//            link[e] = 0;
-//        }
-//        for (int d = 0; d < graph.getDemandSize(); d++) {
-//            for (int p = 0; p < graph.getDemandList().get(d).getDemandPathsListSize(); p++) {
-//                for (int e = 0; e < graph.getNumberOfLinks(); e++) {
-//                    if (isLinkInDemandPath(e + 1, d, p)) {    //e+1 Beacuse numeration of Links beginning from 1 (not from 0)
-//                        link[e] = link[e] + table.get(d)[p];
-//                    }
-//                }
-//            }
-//        }
-//
-//        return link;
-////        testAfterIteration(link, iter);
-//    }
-//
-//    private boolean isLinkInDemandPath(int link, int demand, int path) {
-//        for (Integer link_id : graph.getDemandList().get(demand).getDemandPaths().get(path)) {
-//            if (link_id.intValue() == link) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
 }

@@ -81,17 +81,4 @@ public class Demand {
                 ", pathsNumber=" + pathsNumber +
                 '}';
     }
-
-    //Add Link ID
-//    public void addDemand(Edge edge){
-//        demandPaths.add(edge);
-//    }
-//
-//    public List<Edge> getDemandPaths() {
-//        return demandPaths;
-//    }
-//
-//    public void setDemandPaths(List<Edge> demandPaths) {
-//        this.demandPaths = demandPaths;
-//    }
 }
