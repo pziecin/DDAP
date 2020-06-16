@@ -226,7 +226,7 @@ public class Evolutionary extends LinkLoads {
         for (int i = 0; i < population.size(); i++) {
             float cost =0;
             for (int j = 0; j < linkLoadsList.get(i).length; j++) {
-                cost = cost + (float) linkLoadsList.get(i)[j]/ graph.getModularity().get(j).intValue()*graph.getFibrePairCost().get(j).floatValue();
+                cost = cost + (float) Math.ceil(linkLoadsList.get(i)[j]/ (double) graph.getModularity().get(j).intValue())*graph.getFibrePairCost().get(j).floatValue();
             }
             fitnessList.add(cost);
         }
